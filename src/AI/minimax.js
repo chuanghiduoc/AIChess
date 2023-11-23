@@ -1,0 +1,74 @@
+import { getPieceValue } from "./boardPositions";
+
+// đánh giá minimax
+const evaluateBoard = (board) => {
+  let totalEvaluation = 0;
+  for (let i = 0; i < 8; i++) {
+    for (let j = 0; j < 8; j++) {
+      totalEvaluation = totalEvaluation + getPieceValue(board[i][j], i, j);
+    }
+  }
+  return totalEvaluation;
+};
+
+// alhpha-beta pruning d = 3
+const minimax = (game, depth, alpha, beta, isMaximisingPlayer) => {
+  if (depth === 0) {
+    return -evaluateBoard(game.board());
+  }
+
+  const possibleNextMoves = game.moves();
+  const numPossibleMoves = possibleNextMoves.length;
+  let bestMove;
+
+  if (isMaximisingPlayer) {
+    bestMove = -9999;
+    for (let i = 0; i < numPossibleMoves; i++) {
+      game.move(possibleNextMoves[i]);
+      bestMove = Math.max(
+        bestMove,
+        minimax(game, depth - 1, alpha, beta, !isMaximisingPlayer)
+      );
+      game.undo();
+      alpha = Math.max(alpha, bestMove);
+      if (beta <= alpha) {
+        return bestMove;
+      }
+    }
+  } else {
+    bestMove = 9999;
+    for (let i = 0; i < numPossibleMoves; i++) {
+      game.move(possibleNextMoves[i]);
+      bestMove = Math.min(
+        bestMove,
+        minimax(game, depth - 1, alpha, beta, !isMaximisingPlayer)
+      );
+      game.undo();
+      beta = Math.min(beta, bestMove);
+      if (beta <= alpha) {
+        return bestMove;
+      }
+    }
+  }
+
+  return bestMove;
+};
+
+// tính nước đi tốt nhâts
+export const calculateBestMove = (game, minimaxDepth) => {
+  const possibleNextMoves = game.moves();
+  let bestMove = -9999;
+  let bestMoveFound;
+
+  for (let i = 0; i < possibleNextMoves.length; i++) {
+    const possibleNextMove = possibleNextMoves[i];
+    game.move(possibleNextMove);
+    const value = minimax(game, minimaxDepth, -10000, 10000, false);
+    game.undo();
+    if (value >= bestMove) {
+      bestMove = value;
+      bestMoveFound = possibleNextMove;
+    }
+  }
+  return bestMoveFound;
+};
