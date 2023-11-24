@@ -30,10 +30,6 @@ export default function FullScreenDialog() {
   const { opponent, setOpponent } = useContext(OpponentContext);
   const { difficulty, setDifficulty } = useContext(DifficultyContext);
 
-  const handleClickOpen = () => {
-    setOpenMenu(true);
-  };
-
   const handleClose = () => {
     if (opponent === "AI" && difficulty === "") {
       return;

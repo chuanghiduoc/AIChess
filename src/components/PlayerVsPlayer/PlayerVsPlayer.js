@@ -16,14 +16,6 @@ export default function PlayerVsPlayer({ boardWidth }) {
   const [inCheck, setInCheck] = useState({ element: null, value: false });
   const { openModal, setOpenModal } = useContext(ModalContext);
 
-  function safeGameMutate(modify) {
-    setGame((g) => {
-      const update = { ...g };
-      modify(update);
-      return update;
-    });
-  }
-
   useEffect(() => {
     if (game.in_checkmate()) {
       if (game.turn() === "w") {

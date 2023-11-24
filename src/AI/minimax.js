@@ -3,71 +3,92 @@ import { getPieceValue } from "./boardPositions";
 // đánh giá minimax
 const evaluateBoard = (board) => {
   let totalEvaluation = 0;
-  for (let i = 0; i < 8; i++) {
-    for (let j = 0; j < 8; j++) {
-      totalEvaluation = totalEvaluation + getPieceValue(board[i][j], i, j);
-    }
-  }
+  board.forEach((row, i) => {
+    row.forEach((piece, j) => {
+      totalEvaluation += getPieceValue(piece, i, j);
+    });
+  });
   return totalEvaluation;
 };
 
-// alhpha-beta pruning d = 3
-const minimax = (game, depth, alpha, beta, isMaximisingPlayer) => {
-  if (depth === 0) {
+const minimax = (game, depth, alpha, beta, isMaximisingPlayer, startTime, maxTimeInMs) => {
+  // Kiểm tra thời gian xử lý
+  const currentTime = Date.now();
+  if (currentTime - startTime >= maxTimeInMs) {
     return -evaluateBoard(game.board());
   }
 
+  if (depth === 0) {
+    return -evaluateBoard(game.board());
+  }
+  console.log(depth);
   const possibleNextMoves = game.moves();
-  const numPossibleMoves = possibleNextMoves.length;
-  let bestMove;
 
   if (isMaximisingPlayer) {
-    bestMove = -9999;
-    for (let i = 0; i < numPossibleMoves; i++) {
-      game.move(possibleNextMoves[i]);
-      bestMove = Math.max(
-        bestMove,
-        minimax(game, depth - 1, alpha, beta, !isMaximisingPlayer)
-      );
+    let bestMove = -Infinity;
+    for (const move of possibleNextMoves) {
+      game.move(move);
+      const score = minimax(game, depth - 1, alpha, beta, false);
       game.undo();
-      alpha = Math.max(alpha, bestMove);
-      if (beta <= alpha) {
-        return bestMove;
-      }
-    }
-  } else {
-    bestMove = 9999;
-    for (let i = 0; i < numPossibleMoves; i++) {
-      game.move(possibleNextMoves[i]);
-      bestMove = Math.min(
-        bestMove,
-        minimax(game, depth - 1, alpha, beta, !isMaximisingPlayer)
-      );
-      game.undo();
-      beta = Math.min(beta, bestMove);
-      if (beta <= alpha) {
-        return bestMove;
-      }
-    }
-  }
 
-  return bestMove;
+      bestMove = Math.max(bestMove, score);
+      alpha = Math.max(alpha, bestMove);
+
+      if (beta <= alpha) {
+        break;
+      }
+    }
+    return bestMove;
+  } else {
+    let bestMove = Infinity;
+    for (const move of possibleNextMoves) {
+      game.move(move);
+      const score = minimax(game, depth - 1, alpha, beta, true);
+      game.undo();
+
+      bestMove = Math.min(bestMove, score);
+      beta = Math.min(beta, bestMove);
+
+      if (beta <= alpha) {
+        break;
+      }
+    }
+    return bestMove;
+  }
 };
 
-// tính nước đi tốt nhâts
-export const calculateBestMove = (game, minimaxDepth) => {
+// Hàm để trộn mảng ngẫu nhiên => giảm khó
+const shuffleArray = (array) => {
+  const newArray = array.slice();
+  for (let i = newArray.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+  }
+  return newArray;
+};
+
+export const calculateBestMove = (game, minimaxDepth, maxTimeInMs) => {
+  const startTime = Date.now();
   const possibleNextMoves = game.moves();
-  let bestMove = -9999;
+  const shuffledMoves = shuffleArray(possibleNextMoves);
+  
+  let bestMove = -Infinity;
   let bestMoveFound;
 
-  for (let i = 0; i < possibleNextMoves.length; i++) {
-    const possibleNextMove = possibleNextMoves[i];
-    game.move(possibleNextMove);
-    const value = minimax(game, minimaxDepth, -10000, 10000, false);
+  for (const move of shuffledMoves) {
+    game.move(move);
+    const value = minimax(game, minimaxDepth, -Infinity, Infinity, false, startTime, maxTimeInMs);
     game.undo();
+
     if (value >= bestMove) {
       bestMove = value;
-      bestMoveFound = possibleNextMove;
+      bestMoveFound = move;
+    }
+
+    // Kiểm tra xem đã hết thời gian chưa
+    const currentTime = Date.now();
+    if (currentTime - startTime >= maxTimeInMs) {
+      break;
     }
   }
   return bestMoveFound;
