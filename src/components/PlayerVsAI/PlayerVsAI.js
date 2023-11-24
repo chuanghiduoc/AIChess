@@ -32,8 +32,14 @@ const PlayerVsAI = ({ boardWidth }) => {
     checkWinCondition();
   }, [game, setOpenModal]);
 
+  const getRandomSeconds = (min, max) => {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  };
+  
+  const randomSeconds = getRandomSeconds(7, 999);
+
   const makeAiMove = () => {
-    const bestMove = calculateBestMove(game, difficulty);
+    const bestMove = calculateBestMove(game, difficulty, randomSeconds);
 
     if (game.game_over() || game.in_draw()) {
       return;
