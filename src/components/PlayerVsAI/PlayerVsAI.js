@@ -36,21 +36,45 @@ const PlayerVsAI = ({ boardWidth }) => {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   };
   
-  const randomSeconds = getRandomSeconds(7, 999);
-
+  const randomSecondsWithDiffIs1 = getRandomSeconds(3, 10);
+  const randomSecondsWithDiffIs2 = getRandomSeconds(5, 10);
+  const randomSecondsWithDiffIs3 = getRandomSeconds(10, 15);
+  
   const makeAiMove = () => {
-    const bestMove = calculateBestMove(game, difficulty, randomSeconds);
+    setOpenModal({ message: "Đang suy nghĩ...", value: true });
 
+    let maxTimeInMs;
+  
+    switch (difficulty) {
+      case 1:
+        maxTimeInMs = randomSecondsWithDiffIs1 * 1000;
+        break;
+      case 2:
+        maxTimeInMs = randomSecondsWithDiffIs2 * 1000;
+        break;
+      case 3:
+        maxTimeInMs = randomSecondsWithDiffIs3 * 1000;
+        break;
+      default:
+        maxTimeInMs = randomSecondsWithDiffIs1 * 1000;
+        break;
+    }
+  
+    const bestMove = calculateBestMove(game, difficulty, maxTimeInMs);
+  
     if (game.game_over() || game.in_draw()) {
       return;
     }
+  
+    setOpenModal({ message: "", value: false });
 
     const gameCopy = { ...game };
     gameCopy.move(bestMove);
     setGame(gameCopy);
-
+  
     isInCheck(gameCopy, inCheck, setInCheck, classes);
   };
+  
 
   function highlightAvailableMoves(piece, sourceSquare) {
     const squares = getAvailableSquares(game, sourceSquare);

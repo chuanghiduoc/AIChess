@@ -21,7 +21,7 @@ const minimax = (game, depth, alpha, beta, isMaximisingPlayer, startTime, maxTim
   if (depth === 0) {
     return -evaluateBoard(game.board());
   }
-  // console.log("depth = ",depth);
+  console.log("depth = ",depth);
   const possibleNextMoves = game.moves();
 
   if (isMaximisingPlayer) {
@@ -68,7 +68,7 @@ const shuffleArray = (array) => {
 };
 
 export const calculateBestMove = (game, minimaxDepth, maxTimeInMs) => {
-  // console.log("maxTimeInMs = ", maxTimeInMs);
+  console.log("maxTimeInMs = ", maxTimeInMs);
   const startTime = Date.now();
   const possibleNextMoves = game.moves();
   const shuffledMoves = shuffleArray(possibleNextMoves);
