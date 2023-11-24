@@ -37,12 +37,10 @@ const PlayerVsAI = ({ boardWidth }) => {
   };
   
   const randomSecondsWithDiffIs1 = getRandomSeconds(3, 10);
-  const randomSecondsWithDiffIs2 = getRandomSeconds(5, 10);
-  const randomSecondsWithDiffIs3 = getRandomSeconds(10, 15);
+  const randomSecondsWithDiffIs2 = getRandomSeconds(5, 15);
+  const randomSecondsWithDiffIs3 = getRandomSeconds(5, 999);
   
   const makeAiMove = () => {
-    setOpenModal({ message: "Đang suy nghĩ...", value: true });
-
     let maxTimeInMs;
   
     switch (difficulty) {
@@ -66,8 +64,6 @@ const PlayerVsAI = ({ boardWidth }) => {
       return;
     }
   
-    setOpenModal({ message: "", value: false });
-
     const gameCopy = { ...game };
     gameCopy.move(bestMove);
     setGame(gameCopy);

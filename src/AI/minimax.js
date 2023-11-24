@@ -21,7 +21,7 @@ const minimax = (game, depth, alpha, beta, isMaximisingPlayer, startTime, maxTim
   if (depth === 0) {
     return -evaluateBoard(game.board());
   }
-  console.log("depth = ",depth);
+  // console.log("depth = ",depth);
   const possibleNextMoves = game.moves();
 
   if (isMaximisingPlayer) {
