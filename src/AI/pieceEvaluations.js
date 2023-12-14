@@ -1,7 +1,7 @@
 const reverseArray = (array) => {
     return array.slice().reverse();
   };
-  
+  //tốt
   export const whitePawnEval = [
     [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
     [5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0],
@@ -14,7 +14,7 @@ const reverseArray = (array) => {
   ];
   
   export const blackPawnEval = reverseArray(whitePawnEval);
-  
+  //mã
   export const knightEval = [
     [-5.0, -4.0, -3.0, -3.0, -3.0, -3.0, -4.0, -5.0],
     [-4.0, -2.0, 0.0, 0.0, 0.0, 0.0, -2.0, -4.0],
@@ -25,7 +25,7 @@ const reverseArray = (array) => {
     [-4.0, -2.0, 0.0, 0.5, 0.5, 0.0, -2.0, -4.0],
     [-5.0, -4.0, -3.0, -3.0, -3.0, -3.0, -4.0, -5.0],
   ];
-  
+  //tượng
   export const whiteBishopEval = [
     [-2.0, -1.0, -1.0, -1.0, -1.0, -1.0, -1.0, -2.0],
     [-1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0],
@@ -38,7 +38,7 @@ const reverseArray = (array) => {
   ];
   
   export const blackBishopEval = reverseArray(whiteBishopEval);
-  
+  //xe
   export const whiteRookEval = [
     [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
     [0.5, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.5],
@@ -51,7 +51,7 @@ const reverseArray = (array) => {
   ];
   
   export const blackRookEval = reverseArray(whiteRookEval);
-  
+  //hậu
   export const evalQueen = [
     [-2.0, -1.0, -1.0, -0.5, -0.5, -1.0, -1.0, -2.0],
     [-1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0],
@@ -62,7 +62,7 @@ const reverseArray = (array) => {
     [-1.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, -1.0],
     [-2.0, -1.0, -1.0, -0.5, -0.5, -1.0, -1.0, -2.0],
   ];
-  
+  //vua
   export const whiteKingEval = [
     [-3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0],
     [-3.0, -4.0, -4.0, -5.0, -5.0, -4.0, -4.0, -3.0],

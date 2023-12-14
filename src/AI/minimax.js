@@ -53,6 +53,7 @@ const minimax = (game, depth, alpha, beta, isMaximisingPlayer, startTime, maxTim
         break;
       }
     }
+    console.log("Best move = ",bestMove);
     return bestMove;
   }
 };
@@ -68,29 +69,34 @@ const shuffleArray = (array) => {
 };
 
 export const calculateBestMove = (game, minimaxDepth, maxTimeInMs) => {
-  console.log("maxTimeInMs = ", maxTimeInMs);
-  const startTime = Date.now();
-  const possibleNextMoves = game.moves();
-  const shuffledMoves = shuffleArray(possibleNextMoves);
+  return new Promise((resolve, reject) => {
+    const startTime = Date.now();
+    const possibleNextMoves = game.moves();
+    const shuffledMoves = shuffleArray(possibleNextMoves);
   
-  let bestMove = -Infinity;
-  let bestMoveFound;
+    let bestMove = -Infinity;
+    let bestMoveFound;
 
-  for (const move of shuffledMoves) {
-    game.move(move);
-    const value = minimax(game, minimaxDepth, -Infinity, Infinity, false, startTime, maxTimeInMs);
-    game.undo();
+    for (const move of shuffledMoves) {
+      game.move(move);
+      const value = minimax(game, minimaxDepth, -Infinity, Infinity, false, startTime, maxTimeInMs);
+      
+      game.undo();
 
-    if (value >= bestMove) {
-      bestMove = value;
-      bestMoveFound = move;
+      if (value >= bestMove) {
+        bestMove = value;
+        bestMoveFound = move;
+      }
+
+      // Kiểm tra xem đã hết thời gian chưa
+      const currentTime = Date.now();
+      if (currentTime - startTime >= maxTimeInMs) {
+        resolve(bestMoveFound); 
+        return;
+      }
+      console.log("value, move = ", value, move);
     }
-
-    // Kiểm tra xem đã hết thời gian chưa
-    const currentTime = Date.now();
-    if (currentTime - startTime >= maxTimeInMs) {
-      break;
-    }
-  }
-  return bestMoveFound;
+    console.log("Best move found = ", bestMoveFound);
+    resolve(bestMoveFound); 
+  });
 };

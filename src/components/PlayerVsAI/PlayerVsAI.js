@@ -35,40 +35,40 @@ const PlayerVsAI = ({ boardWidth }) => {
   const getRandomSeconds = (min, max) => {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   };
-  
-  const randomSecondsWithDiffIs1 = getRandomSeconds(3, 10);
-  const randomSecondsWithDiffIs2 = getRandomSeconds(5, 15);
-  const randomSecondsWithDiffIs3 = getRandomSeconds(5, 999);
-  
-  const makeAiMove = () => {
+
+  const makeAiMove = async () => {  
     let maxTimeInMs;
   
     switch (difficulty) {
       case 1:
-        maxTimeInMs = randomSecondsWithDiffIs1 * 1000;
+        maxTimeInMs = getRandomSeconds(3, 10) * 1000;
         break;
       case 2:
-        maxTimeInMs = randomSecondsWithDiffIs2 * 1000;
+        maxTimeInMs = getRandomSeconds(5, 15) * 1000;
         break;
       case 3:
-        maxTimeInMs = randomSecondsWithDiffIs3 * 1000;
+        maxTimeInMs = getRandomSeconds(5, 999) * 1000;
         break;
       default:
-        maxTimeInMs = randomSecondsWithDiffIs1 * 1000;
+        maxTimeInMs = getRandomSeconds(3, 10) * 1000;
         break;
     }
+
+    try {
+      const bestMove = await calculateBestMove(game, difficulty, maxTimeInMs);
+      console.log("PlayAI = ", bestMove);
+      if (game.game_over() || game.in_draw()) {
+        return;
+      }
   
-    const bestMove = calculateBestMove(game, difficulty, maxTimeInMs);
+      const gameCopy = { ...game };
+      gameCopy.move(bestMove);
+      setGame(gameCopy);
   
-    if (game.game_over() || game.in_draw()) {
-      return;
+      isInCheck(gameCopy, inCheck, setInCheck, classes);
+    } catch (error) {
+      console.error("Lỗi trong quá trình tính toán:", error);
     }
-  
-    const gameCopy = { ...game };
-    gameCopy.move(bestMove);
-    setGame(gameCopy);
-  
-    isInCheck(gameCopy, inCheck, setInCheck, classes);
   };
   
 
@@ -117,6 +117,11 @@ const PlayerVsAI = ({ boardWidth }) => {
     // nếu có => check
     isInCheck(game, inCheck, setInCheck, classes);
 
+    // Hủy bỏ timeout trước khi tạo một timeout mới
+    if (currentTimeout) {
+      clearTimeout(currentTimeout);
+    }
+
     // lưu time để undo
     const newTimeout = setTimeout(makeAiMove, 100);
     setCurrentTimeout(newTimeout);
@@ -133,16 +138,18 @@ const PlayerVsAI = ({ boardWidth }) => {
   }, [inCheck.value]);
 
   return (
-    <Chessboard
-      id="PlayerVsAI"
-      animationDuration={200}
-      boardWidth={boardWidth}
-      position={game.fen()}
-      onPieceDrop={onDrop}
-      onPieceDragBegin={highlightAvailableMoves}
-      onPieceDragEnd={unhighlightAvailableMoves}
-      ref={chessboardRef}
-    />
+    <div>
+      <Chessboard
+        id="PlayerVsAI"
+        animationDuration={200}
+        boardWidth={boardWidth}
+        position={game.fen()}
+        onPieceDrop={onDrop}
+        onPieceDragBegin={highlightAvailableMoves}
+        onPieceDragEnd={unhighlightAvailableMoves}
+        ref={chessboardRef}
+      />
+    </div>
   );
 };
 

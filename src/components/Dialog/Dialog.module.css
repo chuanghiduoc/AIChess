@@ -11,3 +11,14 @@
 .listItem {
     height: 13%;
 }
+
+/* antd */
+.fullscreenModal .ant-modal-content {
+    width: 100%;
+    height: 100%;
+  }
+  
+  .fullscreenModal .ant-modal-body {
+    height: calc(100% - 55px); /* Điều chỉnh chiều cao của modal body nếu có footer */
+  }
+  
